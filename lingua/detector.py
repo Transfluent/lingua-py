@@ -154,7 +154,7 @@ class LanguageDetector:
         if len(confidence_values) == 0:
             return None
 
-        most_likely_language, most_likely_language_probability = confidence_values[0]
+        most_likely_language, most_likely_language_probability, _ = confidence_values[0]
 
         if len(confidence_values) == 1:
             return most_likely_language
@@ -171,9 +171,41 @@ class LanguageDetector:
 
         return most_likely_language
 
+    def detect_language_with_probability(self, text: str) -> Optional[Tuple[Language, float]]:
+        """Detect the language of text.
+
+        Args:
+            text (str): The text whose language should be identified.
+
+        Returns:
+            The identified language and its raw confidence score.
+            If the language cannot be reliably detected, None is returned.
+        """
+        confidence_values = self.compute_language_confidence_values(text)
+
+        if len(confidence_values) == 0:
+            return None
+
+        most_likely_language, most_likely_language_probability, confidence = confidence_values[0]
+
+        if len(confidence_values) == 1:
+            return most_likely_language, confidence
+
+        second_most_likely_language_probability = confidence_values[1][1]
+
+        if most_likely_language_probability == second_most_likely_language_probability:
+            return None
+        if (
+            most_likely_language_probability - second_most_likely_language_probability
+            < self._minimum_relative_distance
+        ):
+            return None
+
+        return most_likely_language, confidence
+
     def compute_language_confidence_values(
         self, text: str
-    ) -> List[Tuple[Language, float]]:
+    ) -> List[Tuple[Language, float, float]]:
         """Compute confidence values for each language considered
         possible for the given text.
 
@@ -201,8 +233,8 @@ class LanguageDetector:
             text (str): The text for which to compute confidence values.
 
         Returns:
-            A list of 2-element tuples. Each tuple contains a language
-            and the associated confidence value.
+            A list of 3-element tuples. Each tuple contains a language,
+            the associated confidence value and the raw confidence score.
         """
         cleaned_up_text = self._clean_up_input_text(text)
         if (
@@ -214,13 +246,13 @@ class LanguageDetector:
         language_detected_by_rules = self._detect_language_with_rules(words)
 
         if language_detected_by_rules is not None:
-            return [(language_detected_by_rules, 1.0)]
+            return [(language_detected_by_rules, 1.0, 1.0)]
 
         filtered_languages = self._filter_languages_by_rules(words)
 
         if len(filtered_languages) == 1:
             filtered_language = next(iter(filtered_languages))
-            return [(filtered_language, 1.0)]
+            return [(filtered_language, 1.0, 1.0)]
 
         if self._is_low_accuracy_mode_enabled and len(cleaned_up_text) < 3:
             return []
@@ -258,7 +290,7 @@ class LanguageDetector:
 
         return sorted(
             [
-                (language, highest_probability / probability)
+                (language, highest_probability / probability, probability)
                 for language, probability in summed_up_probabilities.items()
             ],
             key=operator.itemgetter(1, 0),
