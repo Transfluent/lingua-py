@@ -51,7 +51,7 @@ def unigram_model_for_english():
                 ("e", log(0.04)),
                 ("r", log(0.05)),
                 # unknown unigrams
-                ("w", 0.0),
+                # ("w", 0.0),
             ],
             dtype=[("ngram", "U1"), ("frequency", "f2")],
         )
@@ -68,8 +68,8 @@ def bigram_model_for_english():
                 ("te", log(0.13)),
                 ("er", log(0.14)),
                 # unknown bigrams
-                ("aq", 0.0),
-                ("wx", 0.0),
+                # ("aq", 0.0),
+                # ("wx", 0.0),
             ],
             dtype=[("ngram", "U2"), ("frequency", "f2")],
         )
@@ -85,9 +85,9 @@ def trigram_model_for_english():
                 ("lte", log(0.2)),
                 ("ter", log(0.21)),
                 # unknown trigrams
-                ("aqu", 0.0),
-                ("tez", 0.0),
-                ("wxy", 0.0),
+                # ("aqu", 0.0),
+                # ("tez", 0.0),
+                # ("wxy", 0.0),
             ],
             dtype=[("ngram", "U3"), ("frequency", "f2")],
         )
@@ -102,8 +102,8 @@ def quadrigram_model_for_english():
                 ("alte", log(0.25)),
                 ("lter", log(0.26)),
                 # unknown quadrigrams
-                ("aqua", 0.0),
-                ("wxyz", 0.0),
+                # ("aqua", 0.0),
+                # ("wxyz", 0.0),
             ],
             dtype=[("ngram", "U4"), ("frequency", "f2")],
         )
@@ -117,7 +117,7 @@ def fivegram_model_for_english():
             [
                 ("alter", log(0.29)),
                 # unknown fivegrams
-                ("aquas", 0.0),
+                # ("aquas", 0.0),
             ],
             dtype=[("ngram", "U5"), ("frequency", "f2")],
         )
@@ -140,7 +140,7 @@ def unigram_model_for_german():
                 ("e", log(0.09)),
                 ("r", log(0.1)),
                 # unknown unigrams
-                ("w", 0.0),
+                # ("w", 0.0),
             ],
             dtype=[("ngram", "U1"), ("frequency", "f2")],
         )
@@ -157,7 +157,7 @@ def bigram_model_for_german():
                 ("te", log(0.17)),
                 ("er", log(0.18)),
                 # unknown bigrams
-                ("wx", 0.0),
+                # ("wx", 0.0),
             ],
             dtype=[("ngram", "U2"), ("frequency", "f2")],
         )
@@ -173,7 +173,7 @@ def trigram_model_for_german():
                 ("lte", log(0.23)),
                 ("ter", log(0.24)),
                 # unknown trigrams
-                ("wxy", 0.0),
+                # ("wxy", 0.0),
             ],
             dtype=[("ngram", "U3"), ("frequency", "f2")],
         )
@@ -188,7 +188,7 @@ def quadrigram_model_for_german():
                 ("alte", log(0.27)),
                 ("lter", log(0.28)),
                 # unknown quadrigrams
-                ("wxyz", 0.0),
+                # ("wxyz", 0.0),
             ],
             dtype=[("ngram", "U4"), ("frequency", "f2")],
         )
@@ -714,6 +714,7 @@ def test_language_detection_with_rules(
                 Language.AZERBAIJANI,
                 Language.BASQUE,
                 Language.CATALAN,
+                Language.GERMAN,
                 Language.FRENCH,
                 Language.PORTUGUESE,
                 Language.TURKISH,
@@ -737,6 +738,7 @@ def test_language_detection_with_rules(
             [
                 Language.CATALAN,
                 Language.CZECH,
+                Language.GERMAN,
                 Language.ICELANDIC,
                 Language.IRISH,
                 Language.HUNGARIAN,
@@ -752,6 +754,7 @@ def test_language_detection_with_rules(
             [
                 Language.CATALAN,
                 Language.CZECH,
+                Language.GERMAN,
                 Language.ICELANDIC,
                 Language.IRISH,
                 Language.HUNGARIAN,
@@ -767,6 +770,7 @@ def test_language_detection_with_rules(
             [
                 Language.CATALAN,
                 Language.CZECH,
+                Language.GERMAN,
                 Language.ICELANDIC,
                 Language.IRISH,
                 Language.HUNGARIAN,
@@ -781,6 +785,7 @@ def test_language_detection_with_rules(
             "contradicció",
             [
                 Language.CATALAN,
+                Language.GERMAN,
                 Language.HUNGARIAN,
                 Language.ICELANDIC,
                 Language.IRISH,
@@ -798,6 +803,7 @@ def test_language_detection_with_rules(
                 Language.CATALAN,
                 Language.CZECH,
                 Language.FRENCH,
+                Language.GERMAN,
                 Language.HUNGARIAN,
                 Language.ICELANDIC,
                 Language.IRISH,
@@ -893,8 +899,8 @@ def test_strings_without_letters_return_no_language(
         pytest.param(Language.GERMAN, "lter", f(log(0.28))),
         pytest.param(Language.GERMAN, "alter", f(log(0.3))),
         # unknown ngrams
-        pytest.param(Language.GERMAN, "xyz", f(0)),
-        pytest.param(Language.ENGLISH, "ab", f(0)),
+        pytest.param(Language.GERMAN, "xyz", None),
+        pytest.param(Language.ENGLISH, "ab", None),
     ],
 )
 def test_ngram_probability_lookup(

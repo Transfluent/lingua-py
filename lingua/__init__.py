@@ -318,7 +318,7 @@ to the most likely one? These questions can be answered as well:
 ENGLISH: 1.00
 FRENCH: 0.79
 GERMAN: 0.75
-SPANISH: 0.70
+SPANISH: 0.72
 
 ```
 
@@ -412,6 +412,16 @@ LanguageDetectorBuilder.from_iso_codes_639_1(IsoCode639_1.EN, IsoCode639_1.DE)
 LanguageDetectorBuilder.from_iso_codes_639_3(IsoCode639_3.ENG, IsoCode639_3.DEU)
 ```
 """
+
+__all__ = (
+    "LanguageDetectorBuilder",
+    "LanguageDetector",
+    "IsoCode639_1",
+    "IsoCode639_3",
+    "Language",
+    "LanguageModelFilesWriter",
+    "TestDataFilesWriter",
+)
 
 from .builder import LanguageDetectorBuilder
 from .detector import LanguageDetector
